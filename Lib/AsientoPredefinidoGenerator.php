@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of AsientoPredefinido plugin for FacturaScripts
- * Copyright (C) 2021-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2021-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ namespace FacturaScripts\Plugins\AsientosPredefinidos\Lib;
 
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\ToolBox;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\CodePatterns;
 use FacturaScripts\Dinamic\Model\Asiento;
 use FacturaScripts\Dinamic\Model\Subcuenta;
@@ -57,7 +57,7 @@ class AsientoPredefinidoGenerator
         $asiento->concepto = CodePatterns::trans($predefinido->concepto, $asiento);
         $asiento->canal = $form["canal"] ?? null;
         if (false === $asiento->save()) {
-            ToolBox::i18nLog()->warning('no-can-create-accounting-entry');
+            Tools::log()->warning('no-can-create-accounting-entry');
             $database->rollback();
             return $asiento; // Devolvemos el asiento incompleto, vacío.
         }
@@ -162,7 +162,7 @@ class AsientoPredefinidoGenerator
         foreach ($variables as $var) {
             $valor = $form['var_' . $var->codigo] ?? '';
             if (false === is_numeric($valor)) {
-                ToolBox::i18nLog()->warning('La variable ' . $var->codigo . ' no tiene valor.');
+                Tools::log()->warning('La variable ' . $var->codigo . ' no tiene valor.');
                 return false;
             }
         }
@@ -178,7 +178,7 @@ class AsientoPredefinidoGenerator
 
                 $valor = $form['var_' . $aislado[$i]] ?? '';
                 if (false === is_numeric($valor)) {
-                    ToolBox::i18nLog()->warning('La variable ' . $aislado[$i] . ' no está registrada.');
+                    Tools::log()->warning('La variable ' . $aislado[$i] . ' no está registrada.');
                     return false;
                 }
             }
@@ -215,7 +215,7 @@ class AsientoPredefinidoGenerator
             new DataBaseWhere('codsubcuenta', $valorFinal) // transforma el punto en ceros
         ];
         if (false === $subcuenta->loadFromCode('', $where)) {
-            ToolBox::i18nLog()->warning('subaccount-not-found', ['%subAccountCode%' => $valorFinal]);
+            Tools::log()->warning('subaccount-not-found', ['%subAccountCode%' => $valorFinal]);
         }
         return $subcuenta;
     }

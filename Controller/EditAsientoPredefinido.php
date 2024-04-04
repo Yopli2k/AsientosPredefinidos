@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\AsientosPredefinidos\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Lib\ExtendedController\EditController;
+use FacturaScripts\Core\Tools;
 
 /**
  * @author Carlos García Gómez            <carlos@facturascripts.com>
@@ -92,10 +93,10 @@ class EditAsientoPredefinido extends EditController
         if (false === $this->validateFormToken()) {
             return;
         } elseif (empty($form["idempresa"])) {
-            $this->toolBox()->i18nLog()->warning('required-field', ['%field%' => $this->toolBox()->i18n()->trans('company')]);
+            Tools::log()->warning('required-field', ['%field%' => Tools::lang()->trans('company')]);
             return;
         } elseif (empty($form["fecha"])) {
-            $this->toolBox()->i18nLog()->warning('required-field', ['%field%' => $this->toolBox()->i18n()->trans('date')]);
+            Tools::log()->warning('required-field', ['%field%' => Tools::lang()->trans('date')]);
             return;
         }
 
@@ -103,14 +104,14 @@ class EditAsientoPredefinido extends EditController
         $asiento = $this->getModel()->generate($form);
         if ($asiento->exists()) {
             // Se ha creado el siento, así que sacamos mensaje, esperamos un segundo y saltamos a la dirección del asiento recién creado.
-            $this->toolBox()->i18nLog()->notice('generated-accounting-entries', ['%quantity%' => 1]);
+            Tools::log()->notice('generated-accounting-entries', ['%quantity%' => 1]);
             $this->redirect($asiento->url() . "&action=save-ok", 1);
             // ."&action=save-ok" es para que saque un mensaje de que registro creado ok y el parámetro 1
             // es un temporizador en redireccionar, así el usuario ve el mensaje de la línea anterior
             return;
         }
 
-        $this->toolBox()->i18nLog()->warning('record-save-error');
+        Tools::log()->warning('record-save-error');
     }
 
     protected function loadData($viewName, $view)

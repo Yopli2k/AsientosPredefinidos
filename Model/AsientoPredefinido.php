@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of AsientoPredefinido plugin for FacturaScripts
- * Copyright (C) 2021-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2021-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ namespace FacturaScripts\Plugins\AsientosPredefinidos\Model;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Model\Base\ModelTrait;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\Asiento;
 use FacturaScripts\Plugins\AsientosPredefinidos\Lib\AsientoPredefinidoGenerator;
 
@@ -84,9 +85,8 @@ class AsientoPredefinido extends ModelClass
 
     public function test(): bool
     {
-        $utils = $this->toolBox()->utils();
-        $this->concepto = $utils->noHtml($this->concepto);
-        $this->descripcion = $utils->noHtml($this->descripcion);
+        $this->concepto = Tools::noHtml($this->concepto);
+        $this->descripcion = Tools::noHtml($this->descripcion);
 
         return parent::test();
     }

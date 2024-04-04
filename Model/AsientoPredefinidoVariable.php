@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\AsientosPredefinidos\Model;
 
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Model\Base\ModelTrait;
+use FacturaScripts\Core\Tools;
 
 class AsientoPredefinidoVariable extends ModelClass
 {
@@ -56,14 +57,13 @@ class AsientoPredefinidoVariable extends ModelClass
         return "asientospre_variables";
     }
 
-    public function test(): string
+    public function test(): bool
     {
-        $utils = $this->toolBox()->utils();
-        $this->codigo = strtoupper($utils->noHtml($this->codigo));
-        $this->mensaje = $utils->noHtml($this->mensaje);
+        $this->codigo = strtoupper(Tools::noHtml($this->codigo));
+        $this->mensaje = Tools::noHtml($this->mensaje);
 
         if ($this->codigo === 'Z') {
-            self::toolBox()::i18nLog()->warning('No es necesario registrar la variable Z.');
+            Tools::log()->warning('No es necesario registrar la variable Z.');
             return false;
         }
 

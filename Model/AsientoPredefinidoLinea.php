@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of AsientoPredefinido plugin for FacturaScripts
- * Facturascripts       Copyright (C) 2015-2022 Carlos Garcia Gomez            <carlos@facturascripts.com>
+ * FacturaScripts       Copyright (C) 2015-2022 Carlos Garcia Gomez            <carlos@facturascripts.com>
  * AsientosPredefinidos Copyright (C) 2021-2022 Jeronimo Pedro Sánchez Manzano <socger@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ namespace FacturaScripts\Plugins\AsientosPredefinidos\Model;
 
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Model\Base\ModelTrait;
+use FacturaScripts\Core\Tools;
 
 class AsientoPredefinidoLinea extends ModelClass
 {
@@ -85,14 +86,11 @@ class AsientoPredefinidoLinea extends ModelClass
         return "asientospre_lineas";
     }
 
-    public function test(): string
+    public function test(): bool
     {
-        $utils = $this->toolBox()->utils();
-        $this->codcontrapartida = $utils->noHtml($this->codcontrapartida);
-        $this->codsubcuenta = $utils->noHtml($this->codsubcuenta);
-        $this->concepto = $utils->noHtml($this->concepto);
-        $this->debe = $this->toolBox()->utils()->noHtml($this->debe);
-        $this->haber = $this->toolBox()->utils()->noHtml($this->haber);
+        $this->codcontrapartida = Tools::noHtml($this->codcontrapartida);
+        $this->codsubcuenta = Tools::noHtml($this->codsubcuenta);
+        $this->concepto = Tools::noHtml($this->concepto);
 
         return $this->testSubcuenta($this->codsubcuenta) &&
             $this->testSubcuenta($this->codcontrapartida) &&
@@ -111,7 +109,7 @@ class AsientoPredefinidoLinea extends ModelClass
 
         // Comprobamos si introdujo algún caracter no admitido
         if (strlen($aceptados) != strlen($cantidad)) {
-            $this->toolBox()->i18nLog()->warning('Para el ' . $etiqueta . ' introdujo ' . $cantidad
+            Tools::log()->warning('Para el ' . $etiqueta . ' introdujo ' . $cantidad
                 . '. Pero el ' . $etiqueta . ' sólo puede tener números, letras en mayúsculas (A-Z) y operadores matemáticos (+ - * /).');
             return false;
         }
@@ -126,7 +124,7 @@ class AsientoPredefinidoLinea extends ModelClass
 
         // Comprobamos si introdujo algún caracter no admitido
         if (strlen($aceptados) != strlen($codsubcuenta)) {
-            $this->toolBox()->i18nLog()->warning('Para la subcuenta introdujo ' . $codsubcuenta
+            Tools::log()->warning('Para la subcuenta introdujo ' . $codsubcuenta
                 . '. Pero la subcuenta sólo puede tener números(0-9), punto o letras en mayúsculas (A-Z)');
             return false;
         }
@@ -137,7 +135,7 @@ class AsientoPredefinidoLinea extends ModelClass
         for ($i = 0; $i < strlen($codsubcuenta); $i++) {
             $variable = preg_replace("/[^A-Z]/", "", $codsubcuenta[$i]);
             if ($variable === 'Z') {
-                $this->toolBox()->i18nLog()->warning('Para la subcuenta introdujo ' . $codsubcuenta
+                Tools::log()->warning('Para la subcuenta introdujo ' . $codsubcuenta
                     . '. Pero la variable Z no puede usarse en subcuentas, solamente en debe o haber.');
                 return false;
             }
@@ -146,7 +144,7 @@ class AsientoPredefinidoLinea extends ModelClass
             }
         }
         if ($contadorVariables > 1) {
-            $this->toolBox()->i18nLog()->warning('Para la subcuenta introdujo ' . $codsubcuenta
+            Tools::log()->warning('Para la subcuenta introdujo ' . $codsubcuenta
                 . '. Pero la subcuenta no puede tener más de una variable.');
             return false;
         }
@@ -154,7 +152,7 @@ class AsientoPredefinidoLinea extends ModelClass
         // Comprobamos que no hubiera más de un punto
         $puntos = substr_count($codsubcuenta, '.');
         if ($puntos > 1) {
-            $this->toolBox()->i18nLog()->warning('Para la subcuenta introdujo ' . $codsubcuenta
+            Tools::log()->warning('Para la subcuenta introdujo ' . $codsubcuenta
                 . ". Pero la subcuenta no puede tener más de un punto.");
             return false;
         }

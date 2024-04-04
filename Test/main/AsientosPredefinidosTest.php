@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of AsientosPredefinidos plugin for FacturaScripts
- * Copyright (C) 2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2023-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,6 @@
 
 namespace FacturaScripts\Test\Plugins;
 
-use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Core\DataSrc\Empresas;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Plugins\AsientosPredefinidos\Model\AsientoPredefinido;
@@ -53,7 +52,7 @@ final class AsientosPredefinidosTest extends TestCase
         // generamos el asiento
         $asiento = $asientoPredefinido->generate([
             'idempresa' => $empresa->idempresa,
-            'fecha' => date(AsientoPredefinido::DATE_STYLE),
+            'fecha' => Tools::date(),
             'canal' => 0,
             'var_A' => 0,
             'var_C' => 20,
@@ -65,7 +64,7 @@ final class AsientosPredefinidosTest extends TestCase
         // Comprobamos que el asiento que ha creado correctamente
         $this->assertTrue($asiento->exists());
 
-        $textoMes = ToolBox::i18n()->trans(strtolower(date('F', strtotime($asiento->fecha))));
+        $textoMes = Tools::lang()->trans(strtolower(date('F', strtotime($asiento->fecha))));
         $this->assertEquals('Nómina ' . $textoMes, $asiento->concepto);
         $this->assertEquals(20, $asiento->importe);
 
@@ -113,14 +112,14 @@ final class AsientosPredefinidosTest extends TestCase
         // generamos el asiento
         $asiento = $asientoPredefinido->generate([
             'idempresa' => $empresa->idempresa,
-            'fecha' => date(AsientoPredefinido::DATE_STYLE),
+            'fecha' => Tools::date(),
             'canal' => 0,
             'var_A' => 0,
             'var_B' => 123,
         ]);
 
         // Comprobamos que el asiento que ha creado correctamente
-        $textoMes = ToolBox::i18n()->trans(strtolower(date('F', strtotime($asiento->fecha))));
+        $textoMes = Tools::lang()->trans(strtolower(date('F', strtotime($asiento->fecha))));
         $this->assertEquals('Cuota de autónomo ' . $textoMes, $asiento->concepto);
         $this->assertEquals(123, $asiento->importe);
 
@@ -153,27 +152,27 @@ final class AsientosPredefinidosTest extends TestCase
         // generamos el asiento
         $asiento = $asientoPredefinido->generate([
             'idempresa' => $empresa->idempresa,
-            'fecha' => date(AsientoPredefinido::DATE_STYLE),
+            'fecha' => Tools::date(),
             'canal' => 0,
             'var_A' => 0,
             'var_B' => 123,
         ]);
 
         // Comprobamos que el asiento que ha creado correctamente
-        $textoMes = ToolBox::i18n()->trans(strtolower(date('F', strtotime($asiento->fecha))));
-        $this->assertEquals('N/pago cuota autónomo ' . $textoMes, $asiento->concepto);
+        $textoMes = Tools::lang()->trans(strtolower(date('F', strtotime($asiento->fecha))));
+        $this->assertEquals('Pago cuota autónomo ' . $textoMes, $asiento->concepto);
         $this->assertEquals(123, $asiento->importe);
 
         // Comprobamos que las partidas se hayan generado correctamente.
         $partidas = $asiento->getLines();
 
         $this->assertEquals('4760000000', $partidas[0]->codsubcuenta);
-        $this->assertEquals('N/pago cuota autónomo ' . $textoMes, $partidas[0]->concepto);
+        $this->assertEquals('Pago cuota autónomo ' . $textoMes, $partidas[0]->concepto);
         $this->assertEquals(123, $partidas[0]->debe);
         $this->assertEquals(0, $partidas[0]->haber);
 
         $this->assertEquals('5720000000', $partidas[1]->codsubcuenta);
-        $this->assertEquals('N/pago cuota autónomo ' . $textoMes, $partidas[1]->concepto);
+        $this->assertEquals('Pago cuota autónomo ' . $textoMes, $partidas[1]->concepto);
         $this->assertEquals(0, $partidas[1]->debe);
         $this->assertEquals(123, $partidas[1]->haber);
 
@@ -193,14 +192,14 @@ final class AsientosPredefinidosTest extends TestCase
         // generamos el asiento
         $asiento = $asientoPredefinido->generate([
             'idempresa' => $empresa->idempresa,
-            'fecha' => date(AsientoPredefinido::DATE_STYLE),
+            'fecha' => Tools::date(),
             'canal' => 0,
             'var_A' => 0,
             'var_B' => 123,
         ]);
 
         // Comprobamos que el asiento que ha creado correctamente
-        $textoMes = ToolBox::i18n()->trans(strtolower(date('F', strtotime($asiento->fecha))));
+        $textoMes = Tools::lang()->trans(strtolower(date('F', strtotime($asiento->fecha))));
         $this->assertEquals('Pago nómina ' . $textoMes, $asiento->concepto);
         $this->assertEquals(123, $asiento->importe);
 
@@ -208,12 +207,12 @@ final class AsientosPredefinidosTest extends TestCase
         $partidas = $asiento->getLines();
 
         $this->assertEquals('4650000000', $partidas[0]->codsubcuenta);
-        $this->assertEquals('N/pago nómina ' . $textoMes, $partidas[0]->concepto);
+        $this->assertEquals('Pago nómina ' . $textoMes, $partidas[0]->concepto);
         $this->assertEquals(123, $partidas[0]->debe);
         $this->assertEquals(0, $partidas[0]->haber);
 
         $this->assertEquals('5720000000', $partidas[1]->codsubcuenta);
-        $this->assertEquals('N/pago nómina ' . $textoMes, $partidas[1]->concepto);
+        $this->assertEquals('Pago nómina ' . $textoMes, $partidas[1]->concepto);
         $this->assertEquals(0, $partidas[1]->debe);
         $this->assertEquals(123, $partidas[1]->haber);
 
