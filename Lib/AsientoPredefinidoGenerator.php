@@ -73,6 +73,11 @@ class AsientoPredefinidoGenerator
             $newLine->debe = static::cantidadReplace($line->debe, $variables, $form, $saldoDebe, $saldoHaber);
             $newLine->haber = static::cantidadReplace($line->haber, $variables, $form, $saldoDebe, $saldoHaber);
 
+            // redondeamos
+            $decimals = Tools::settings('default', 'decimals', 2);
+            $newLine->debe = round($newLine->debe, $decimals);
+            $newLine->haber = round($newLine->haber, $decimals);
+
             // obtenemos la subcuenta
             $subcuenta = static::subcuentaReplace($line->codsubcuenta, $variables, $form, $asiento->codejercicio);
             if (false === $subcuenta->exists()) {
