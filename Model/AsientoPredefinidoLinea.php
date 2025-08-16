@@ -20,8 +20,8 @@
 
 namespace FacturaScripts\Plugins\AsientosPredefinidos\Model;
 
-use FacturaScripts\Core\Model\Base\ModelClass;
-use FacturaScripts\Core\Model\Base\ModelTrait;
+use FacturaScripts\Core\Template\ModelClass;
+use FacturaScripts\Core\Template\ModelTrait;
 use FacturaScripts\Core\Tools;
 
 class AsientoPredefinidoLinea extends ModelClass
@@ -68,7 +68,7 @@ class AsientoPredefinidoLinea extends ModelClass
      */
     public $orden;
 
-    public function clear()
+    public function clear(): void
     {
         parent::clear();
         $this->debe = '0';

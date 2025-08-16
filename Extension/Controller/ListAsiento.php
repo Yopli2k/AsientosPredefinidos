@@ -19,6 +19,9 @@
 
 namespace FacturaScripts\Plugins\AsientosPredefinidos\Extension\Controller;
 
+use FacturaScripts\Core\Tools;
+
+
 class ListAsiento
 {
 
@@ -37,7 +40,7 @@ class ListAsiento
     protected function createViewsAsientosPredefinidos()
     {
         return function (string $viewName = 'ListAsientoPredefinido') {
-            $this->addView($viewName, 'AsientoPredefinido', 'predefined-acc-entries', 'fas fa-blender');
+            $this->addView($viewName, 'AsientoPredefinido', 'predefined-acc-entries', 'fa-solid fa-blender');
             $this->addOrderBy($viewName, ["id"], "code");
             $this->addOrderBy($viewName, ["descripcion"], "description", 1);
             $this->addSearchFields($viewName, ["id", "concepto", "descripcion"]);
