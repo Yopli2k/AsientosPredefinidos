@@ -1,5 +1,5 @@
 {
-    "predefined-acc-entries": "Asientos predefinidos",
-    "predefined-acc-entry": "Asiento predefinido",
-    "variables": "Variables"
+    "predefined-acc-entries": "Vordefinierte Buchungen",
+    "predefined-acc-entry": "Vordefinierter Buchungsposten",
+    "required-field": "Erforderliches Feld %field%"
 }

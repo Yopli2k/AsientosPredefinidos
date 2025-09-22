@@ -1,5 +1,5 @@
 {
     "predefined-acc-entries": "Places prédéfinies",
     "predefined-acc-entry": "Place prédéfinie",
-    "variables": "Variables"
+    "required-field": "Champ %field% requis"
 }

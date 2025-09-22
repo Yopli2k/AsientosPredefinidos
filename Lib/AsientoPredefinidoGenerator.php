@@ -1,8 +1,7 @@
 <?php
 /**
  * This file is part of AsientoPredefinido plugin for FacturaScripts
- * Facturascripts       Copyright (C) 2015-2022 Carlos Garcia Gomez            <carlos@facturascripts.com>
- * AsientoPredefinido   Copyright (C) 2021-2022 Jeronimo Pedro Sánchez Manzano <socger@gmail.com>
+ * Copyright (C) 2021-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +21,7 @@ namespace FacturaScripts\Plugins\AsientosPredefinidos\Lib;
 
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\ToolBox;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\CodePatterns;
 use FacturaScripts\Dinamic\Model\Asiento;
 use FacturaScripts\Dinamic\Model\Subcuenta;
@@ -32,8 +31,8 @@ use FacturaScripts\Plugins\AsientosPredefinidos\Model\AsientoPredefinidoVariable
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
- * Class for generate an accounting entry from template.
- *
+ * @author Carlos García Gómez            <carlos@facturascripts.com>
+ * @author Daniel Fernández Giménez       <hola@danielfg.es>
  * @author Jeronimo Pedro Sánchez Manzano <socger@gmail.com>
  */
 class AsientoPredefinidoGenerator
@@ -56,8 +55,9 @@ class AsientoPredefinidoGenerator
         $asiento->idempresa = (int)$form["idempresa"];
         $asiento->setDate($form["fecha"]);
         $asiento->concepto = CodePatterns::trans($predefinido->concepto, $asiento);
+        $asiento->canal = $form["canal"] ?? null;
         if (false === $asiento->save()) {
-            ToolBox::i18nLog()->warning('no-can-create-accounting-entry');
+            Tools::log()->warning('no-can-create-accounting-entry');
             $database->rollback();
             return $asiento; // Devolvemos el asiento incompleto, vacío.
         }
@@ -72,6 +72,11 @@ class AsientoPredefinidoGenerator
             $newLine->concepto = CodePatterns::trans($line->concepto, $asiento);
             $newLine->debe = static::cantidadReplace($line->debe, $variables, $form, $saldoDebe, $saldoHaber);
             $newLine->haber = static::cantidadReplace($line->haber, $variables, $form, $saldoDebe, $saldoHaber);
+
+            // redondeamos
+            $decimals = Tools::settings('default', 'decimals', 2);
+            $newLine->debe = round($newLine->debe, $decimals);
+            $newLine->haber = round($newLine->haber, $decimals);
 
             // obtenemos la subcuenta
             $subcuenta = static::subcuentaReplace($line->codsubcuenta, $variables, $form, $asiento->codejercicio);
@@ -162,7 +167,7 @@ class AsientoPredefinidoGenerator
         foreach ($variables as $var) {
             $valor = $form['var_' . $var->codigo] ?? '';
             if (false === is_numeric($valor)) {
-                ToolBox::i18nLog()->warning('La variable ' . $var->codigo . ' no tiene valor.');
+                Tools::log()->warning('La variable ' . $var->codigo . ' no tiene valor.');
                 return false;
             }
         }
@@ -178,7 +183,7 @@ class AsientoPredefinidoGenerator
 
                 $valor = $form['var_' . $aislado[$i]] ?? '';
                 if (false === is_numeric($valor)) {
-                    ToolBox::i18nLog()->warning('La variable ' . $aislado[$i] . ' no está registrada.');
+                    Tools::log()->warning('La variable ' . $aislado[$i] . ' no está registrada.');
                     return false;
                 }
             }
@@ -215,7 +220,7 @@ class AsientoPredefinidoGenerator
             new DataBaseWhere('codsubcuenta', $valorFinal) // transforma el punto en ceros
         ];
         if (false === $subcuenta->loadFromCode('', $where)) {
-            ToolBox::i18nLog()->warning('subaccount-not-found', ['%subAccountCode%' => $valorFinal]);
+            Tools::log()->warning('subaccount-not-found', ['%subAccountCode%' => $valorFinal]);
         }
         return $subcuenta;
     }

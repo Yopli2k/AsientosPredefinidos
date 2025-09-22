@@ -1,5 +1,5 @@
 {
     "predefined-acc-entries": "Asentos predefinidos",
     "predefined-acc-entry": "Asento predefinido",
-    "variables": "Variables"
+    "required-field": "Campo %field% obrigatorio"
 }

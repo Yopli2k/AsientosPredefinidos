@@ -1,5 +1,5 @@
 {
     "predefined-acc-entries": "Predefined seats",
     "predefined-acc-entry": "Predefined seat",
-    "variables": "Variables"
+    "required-field": "Mandatory %field% field"
 }
